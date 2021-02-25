@@ -12,6 +12,7 @@
                 <Style TargetType="{x:Type TreeViewItem}">
                     <EventSetter Event="TreeViewItem.Selected"  Handler="authorsTree_ItemSelected"/>
                     <EventSetter Event="TreeViewItem.MouseDown" Handler="authorsTree_MouseDown"/>
+                    <EventSetter Event="TreeViewItem.MouseUp"   Handler="authorsTree_MouseUp"/>
                     <EventSetter Event="TreeViewItem.MouseMove" Handler="authorsTree_MouseMove"/>
                     <EventSetter Event="TreeViewItem.DragOver"  Handler="authorsTree_DragOver"/>
                     <EventSetter Event="TreeViewItem.Drop"      Handler="authorsTree_Drop" />

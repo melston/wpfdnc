@@ -22,6 +22,7 @@ namespace WpfBooks
         private Point _selectedMouseDown;
         private Chapter _selectedChapter;
         private Book _sourceBook;
+        private TreeViewItem _tvi;
 
         private void authorsTree_ItemSelected(object sender, RoutedEventArgs e)
         {
@@ -39,6 +40,17 @@ namespace WpfBooks
             if (e.ChangedButton == MouseButton.Left)
             {
                 _selectedMouseDown = e.GetPosition(authorsTree);
+            }
+        }
+
+        private void authorsTree_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                if (_tvi != null) _tvi.Background = Brushes.White;
+                _tvi = null;
+                _selectedChapter = null;
+                _sourceBook = null;
             }
         }
 
@@ -71,7 +83,9 @@ namespace WpfBooks
 
                 if (MovedEnough(currentPosition, _selectedMouseDown))
                 {
+                    if (_tvi != null) _tvi.Background = Brushes.White;
                     UIElement targetElement = e.OriginalSource as UIElement;
+                    _tvi = GetTreeViewItem(targetElement);
                     // Verify that this is a valid drop and then store the drop target
                     Chapter chapTarget = GetNearestChapter(targetElement);
                     Book bookTarget = GetNearestBook(targetElement);
@@ -79,16 +93,19 @@ namespace WpfBooks
                     {
                         e.Effects = DragDropEffects.Move;
                         DropEffectText.Text = "DragOver Effects=Move, Target=" + chapTarget.ChapterName;
+                        _tvi.Background = Brushes.LightGray;
                     }
                     else if (bookTarget != null)
                     {
                         e.Effects = DragDropEffects.Move;
                         DropEffectText.Text = "DragOver Effects=Move, Target=" + bookTarget.Title;
+                        _tvi.Background = Brushes.LightGray;
                     }
                     else 
                     {
                         DropEffectText.Text = "DragOver Effects=None";
                         e.Effects = DragDropEffects.None;
+                        _tvi = null;
                     }
                 }
                 e.Handled = true;
@@ -128,6 +145,7 @@ namespace WpfBooks
                     ToText.Text = TargetBook.Title + "/" + moveIdx;
                     MoveChapter(_selectedChapter, _sourceBook, TargetBook, moveIdx);
                 }
+                _tvi.Background = Brushes.White;
             }
             catch (Exception)
             {
@@ -154,6 +172,19 @@ namespace WpfBooks
             }
             return dropOK;
 
+        }
+
+        private TreeViewItem GetTreeViewItem(UIElement element)
+        {
+            // Walk up the element tree to the nearest tree view item.
+            TreeViewItem container = element as TreeViewItem;
+            while ((container == null) && (element != null))
+            {
+                element = VisualTreeHelper.GetParent(element) as UIElement;
+                container = element as TreeViewItem;
+            }
+
+            return container;
         }
 
         private Chapter GetNearestChapter(UIElement element)
