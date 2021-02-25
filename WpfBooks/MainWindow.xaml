@@ -1,0 +1,47 @@
+﻿<Window x:Class="WpfBooks.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfBooks"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid Margin="10">
+        <TreeView Name="authorsTree" AllowDrop="True">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <EventSetter Event="TreeViewItem.DragOver"  Handler="authorsTree_DragOver"/>
+                    <EventSetter Event="TreeViewItem.Drop"      Handler="authorsTree_Drop" />
+                    <EventSetter Event="TreeViewItem.MouseMove" Handler="authorsTree_MouseMove"/>
+                    <EventSetter Event="TreeViewItem.MouseDown" Handler="authorsTree_MouseDown"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.Resources>
+                <local:MyDateConverter x:Key="dateConverter"/>
+                <HierarchicalDataTemplate DataType="{x:Type local:Author}" ItemsSource="{Binding Books}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text=" [" Foreground="Blue" />
+                        <TextBlock Text="{Binding Books.Count}" Foreground="Blue" />
+                        <TextBlock Text="]" Foreground="Blue" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type local:Book}" ItemsSource="{Binding Chapters}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Title}" />
+                        <TextBlock Text=" [" Foreground="Blue" />
+                        <TextBlock Text="{Binding Chapters.Count}" Foreground="Blue" />
+                        <TextBlock Text="]" Foreground="Blue" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type local:Chapter}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding ChapterName}" Margin="0, 0, 10, 0"/>
+                        <TextBlock Text="{Binding Date, Converter={StaticResource dateConverter}}" 
+                                   Margin="10, 0, 0, 0" Foreground="Blue" />
+                    </StackPanel>
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+    </Grid>
+</Window>
