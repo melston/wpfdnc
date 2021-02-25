@@ -15,3 +15,9 @@ The data consists of the following:
   - ChapterName - the title of the story as it was published on the site.
   - Date - the date a story was published on the site
 
+Inside the WpfBooks project the code is organized as follows:
+- Author.cs/Book.cs/Chapter.cs - the basic data elements that get moved about.
+- Utils.cs - contains the code to generate the sample data.
+- MainWindow.xaml.cs - creates the overall UI and has a function to move the observable data from
+  one place to another (moving chapters from one book to another or reorder chapters in a book).
+- MainWindowDnd.cs - contains the code for handling all of the Drag and Drop functionality.
