@@ -56,5 +56,11 @@
             <TextBlock Text="Effect" />
             <TextBlock Name="DropEffectText" Margin="10, 0, 0, 0" />
         </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Move From:" />
+            <TextBlock Name="FromText" Margin="10, 0, 0, 0" />
+            <TextBlock Text="Move To:"  Margin="10, 0, 0, 0" />
+            <TextBlock Name="ToText" Margin="10, 0, 0, 0" />
+        </StackPanel>
     </StackPanel>
 </Window>

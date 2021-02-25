@@ -20,7 +20,7 @@ namespace WpfBooks
     public partial class MainWindow : Window
     {
         private Point _selectedMouseDown;
-        private Chapter _selectedChapter, _target;
+        private Chapter _selectedChapter;
         private Book _sourceBook;
 
         private void authorsTree_ItemSelected(object sender, RoutedEventArgs e)
@@ -71,14 +71,21 @@ namespace WpfBooks
 
                 if (MovedEnough(currentPosition, _selectedMouseDown))
                 {
+                    UIElement targetElement = e.OriginalSource as UIElement;
                     // Verify that this is a valid drop and then store the drop target
-                    Chapter chapTarget = GetNearestChapter(e.OriginalSource as UIElement);
-                    if (chapTarget != null && CheckDropTarget(_selectedChapter, chapTarget))
+                    Chapter chapTarget = GetNearestChapter(targetElement);
+                    Book bookTarget = GetNearestBook(targetElement);
+                    if (chapTarget != null && CheckDropChapterTarget(_selectedChapter, chapTarget))
                     {
                         e.Effects = DragDropEffects.Move;
                         DropEffectText.Text = "DragOver Effects=Move, Target=" + chapTarget.ChapterName;
                     }
-                    else
+                    else if (bookTarget != null)
+                    {
+                        e.Effects = DragDropEffects.Move;
+                        DropEffectText.Text = "DragOver Effects=Move, Target=" + bookTarget.Title;
+                    }
+                    else 
                     {
                         DropEffectText.Text = "DragOver Effects=None";
                         e.Effects = DragDropEffects.None;
@@ -99,15 +106,26 @@ namespace WpfBooks
                 e.Handled = true;
 
                 // Verify that this is a valid drop and then store the drop target
-                Chapter TargetItem = GetNearestChapter(e.OriginalSource as UIElement);
+                Chapter TargetChapter = GetNearestChapter(e.OriginalSource as UIElement);
                 Book TargetBook = GetNearestBook(e.OriginalSource as UIElement);
-                if (TargetItem != null && TargetBook != null && _selectedChapter != null)
+                if (TargetChapter != null && TargetBook != null && _selectedChapter != null)
                 {
-                    _target = TargetItem;
-                    e.Effects = DragDropEffects.Move;
+                    // Insert the Chapter into the target Book's Chapters list before the
+                    // Chapter we are hovering over.
+                    int moveIdx = TargetBook.Chapters.IndexOf(TargetChapter);
                     DropEffectText.Text = "Drop Effects=Move, TargetBook=" + TargetBook.Title +
-                        ", TargetChapter=" + TargetItem.ChapterName;
-                    int moveIdx = TargetBook.Chapters.IndexOf(TargetItem);
+                        ", TargetChapter=" + TargetChapter.ChapterName;
+                    FromText.Text = _sourceBook.Title + "/" + _sourceBook.Chapters.IndexOf(_selectedChapter);
+                    ToText.Text = TargetBook.Title + "/" + moveIdx;
+                    MoveChapter(_selectedChapter, _sourceBook, TargetBook, moveIdx);
+                }
+                else if (TargetBook != null && _selectedChapter != null)
+                {
+                    // Append Chapter to the Book's Chapters list
+                    DropEffectText.Text = "Drop Effects=Move, TargetBook=" + TargetBook.Title;
+                    int moveIdx = TargetBook.Chapters.Count;
+                    FromText.Text = _sourceBook.Title + "/" + _sourceBook.Chapters.IndexOf(_selectedChapter);
+                    ToText.Text = TargetBook.Title + "/" + moveIdx;
                     MoveChapter(_selectedChapter, _sourceBook, TargetBook, moveIdx);
                 }
             }
@@ -126,7 +144,7 @@ namespace WpfBooks
             return false;
         }
 
-        private bool CheckDropTarget(Chapter _sourceItem, Chapter _targetItem)
+        private bool CheckDropChapterTarget(Chapter _sourceItem, Chapter _targetItem)
         {
             //Check whether the target item is meeting your condition
             bool dropOK = false;
