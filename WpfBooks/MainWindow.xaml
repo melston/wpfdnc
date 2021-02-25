@@ -6,14 +6,15 @@
         xmlns:local="clr-namespace:WpfBooks"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid Margin="10">
+    <StackPanel Orientation="Vertical" Margin="10">
         <TreeView Name="authorsTree" AllowDrop="True">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
+                    <EventSetter Event="TreeViewItem.Selected"  Handler="authorsTree_ItemSelected"/>
+                    <EventSetter Event="TreeViewItem.MouseDown" Handler="authorsTree_MouseDown"/>
+                    <EventSetter Event="TreeViewItem.MouseMove" Handler="authorsTree_MouseMove"/>
                     <EventSetter Event="TreeViewItem.DragOver"  Handler="authorsTree_DragOver"/>
                     <EventSetter Event="TreeViewItem.Drop"      Handler="authorsTree_Drop" />
-                    <EventSetter Event="TreeViewItem.MouseMove" Handler="authorsTree_MouseMove"/>
-                    <EventSetter Event="TreeViewItem.MouseDown" Handler="authorsTree_MouseDown"/>
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.Resources>
@@ -43,5 +44,17 @@
                 </DataTemplate>
             </TreeView.Resources>
         </TreeView>
-    </Grid>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Source Book" />
+            <TextBlock Name="SourceBookName" Margin="10, 0, 0, 0" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Source Chapter" />
+            <TextBlock Name="SourceChapterName" Margin="10, 0, 0, 0" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Effect" />
+            <TextBlock Name="DropEffectText" Margin="10, 0, 0, 0" />
+        </StackPanel>
+    </StackPanel>
 </Window>
