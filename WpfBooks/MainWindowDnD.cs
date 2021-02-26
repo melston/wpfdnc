@@ -43,17 +43,6 @@ namespace WpfBooks
             }
         }
 
-        private void authorsTree_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                if (_tvi != null) _tvi.Background = Brushes.White;
-                _tvi = null;
-                _selectedChapter = null;
-                _sourceBook = null;
-            }
-        }
-
         private void authorsTree_MouseMove(object sender, MouseEventArgs e)
         {
             try
@@ -145,7 +134,10 @@ namespace WpfBooks
                     ToText.Text = TargetBook.Title + "/" + moveIdx;
                     MoveChapter(_selectedChapter, _sourceBook, TargetBook, moveIdx);
                 }
-                _tvi.Background = Brushes.White;
+                if (null != _tvi) _tvi.Background = Brushes.White;
+                _tvi = null;
+                _selectedChapter = null;
+                _sourceBook = null;
             }
             catch (Exception)
             {
